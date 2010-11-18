@@ -2,13 +2,13 @@
 
 Gem::Specification.new do |s|
   s.name = %q{ruby-satisfaction}
-  s.version = "0.4.0"
+  s.version = "0.4.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Scott Fleckenstein", "Josh Nichols", "Pius Uzamere"]
   s.date = %q{2009-07-10}
   s.description = %q{Ruby interface to Get Satisfaction}
-  s.email = %q{scott@getsatisfaction.com}
+  s.email = %q{nerds+rubygems@getsatisfaction.com}
   s.extra_rdoc_files = [
     "README.txt"
   ]
@@ -42,7 +42,7 @@ Gem::Specification.new do |s|
      "spec/identity_map_spec.rb",
      "spec/spec_helper.rb"
   ]
-  s.homepage = %q{http://github.com/nullstyle/ruby-satisfaction}
+  s.homepage = %q{https://github.com/satisfaction/ruby-satisfaction}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubyforge_project = %q{satisfaction}
