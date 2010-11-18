@@ -38,8 +38,6 @@ class Sfn::Loader
     response = execute(http, request)
     
     case response
-    when Net::HTTPNotModified
-      return [:ok, cache_record.body]
     when Net::HTTPSuccess
       cache.put(uri, response)
       [:ok, response.body]
@@ -53,6 +51,10 @@ class Sfn::Loader
       [:forbidden, response.body]
     when Net::HTTPUnauthorized
       [:unauthorized, response.body]
+    when Net::HTTPNotFound
+      [:not_found, response.body]
+    when Net::HTTPServiceUnavailable
+      [:service_unavailable, response.body]
     else
       raise "Explode: #{response.to_yaml}"
     end
@@ -77,6 +79,8 @@ class Sfn::Loader
     response = execute(http, request)
     
     case response
+    when Net::HTTPNotFound
+      [:not_found, response.body]
     when Net::HTTPUnauthorized
       [:unauthorized, response.body]
     when Net::HTTPBadRequest
@@ -85,6 +89,8 @@ class Sfn::Loader
       [:forbidden, response.body]
     when Net::HTTPSuccess
       [:ok, response.body]
+    when Net::HTTPServiceUnavailable
+      [:service_unavailable, response.body]
     else
       raise "Explode: #{response.to_yaml}"
     end
@@ -112,4 +118,5 @@ class Sfn::Loader
     end
   end
 end
+
 
