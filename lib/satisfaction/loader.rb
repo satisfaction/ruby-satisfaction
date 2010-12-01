@@ -46,7 +46,7 @@ class Sfn::Loader
       raise ArgumentError, "Too many redirects" unless limit > 0 #TODO: what is a better error here?
       get(response['location'], options.merge(:redirect_limit => limit - 1))
     when Net::HTTPBadRequest
-      [:bad_request, response.body]
+      raise RuntimeError, response.body
     when Net::HTTPForbidden
       [:forbidden, response.body]
     when Net::HTTPUnauthorized
@@ -54,7 +54,7 @@ class Sfn::Loader
     when Net::HTTPNotFound
       [:not_found, response.body]
     when Net::HTTPServiceUnavailable
-      [:service_unavailable, response.body]
+      raise RuntimeError, "The site is down for maintenance. Please try again later."
     else
       raise "Explode: #{response.to_yaml}"
     end
@@ -84,13 +84,17 @@ class Sfn::Loader
     when Net::HTTPUnauthorized
       [:unauthorized, response.body]
     when Net::HTTPBadRequest
-      [:bad_request, response.body]
+      raise RuntimeError, response.body
     when Net::HTTPForbidden
       [:forbidden, response.body]
     when Net::HTTPSuccess
       [:ok, response.body]
-    when Net::HTTPServiceUnavailable
-      [:service_unavailable, response.body]
+    when Net::HTTPMethodNotAllowed
+      #Post responds differently when the site is down for maintenance.
+      #This will raise an error if site is down otherwise we will return method_not_allowed.
+      get(url, options)
+
+      [:method_not_allowed, response.body]
     else
       raise "Explode: #{response.to_yaml}"
     end
