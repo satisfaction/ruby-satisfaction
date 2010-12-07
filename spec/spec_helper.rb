@@ -3,7 +3,6 @@ require 'rspec'
 require 'fakeweb'
 require 'ruby-debug'
 require 'rr'
-require 'erector'
 
 Debugger.settings[:autolist] = 1
 Debugger.settings[:autoeval] = true
