@@ -34,7 +34,7 @@ describe Satisfaction do
       end
 
       it "should raise an exception" do
-        lambda {@sfn.request_token}.should raise_exception(RuntimeError)
+        lambda {@sfn.request_token}.should raise_exception(Sfn::Error)
       end
     end
   end

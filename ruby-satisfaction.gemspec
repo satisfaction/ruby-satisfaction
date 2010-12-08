@@ -65,21 +65,21 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<memcache-client>, [">= 1.5.0"])
       s.add_runtime_dependency(%q<oauth>, [">= 0.3.5"])
-      s.add_runtime_dependency(%q<activesupport>, ["~> 2.3.2"])
+      s.add_runtime_dependency(%q<activesupport>, ["~> 2.3"])
       s.add_runtime_dependency(%q<json>, [">= 1.4.6"])
-      s.add_runtime_dependency(%q<hpricot>, [">= 0.8.3"])
+      s.add_runtime_dependency(%q<nokogiri>, [">= 1.4.2"])
     else
       s.add_dependency(%q<memcache-client>, [">= 1.5.0"])
       s.add_dependency(%q<oauth>, [">= 0.3.5"])
-      s.add_dependency(%q<activesupport>, ["~> 2.3.2"])
+      s.add_dependency(%q<activesupport>, ["~> 2.3"])
       s.add_dependency(%q<json>, [">= 1.4.6"])
-      s.add_dependency(%q<hpricot>, [">= 0.8.3"])
+      s.add_dependency(%q<nokogiri>, [">= 1.4.2"])
     end
   else
     s.add_dependency(%q<memcache-client>, [">= 1.5.0"])
     s.add_dependency(%q<oauth>, [">= 0.3.5"])
-    s.add_dependency(%q<activesupport>, ["~> 2.3.2"])
+    s.add_dependency(%q<activesupport>, ["~> 2.3"])
     s.add_dependency(%q<json>, [">= 1.4.6"])
-    s.add_dependency(%q<hpricot>, [">= 0.8.3"])
+    s.add_dependency(%q<nokogiri>, [">= 1.4.2"])
   end
 end

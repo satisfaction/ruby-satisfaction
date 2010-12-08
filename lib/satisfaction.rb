@@ -2,6 +2,11 @@ require 'satisfaction/external_dependencies'
 module Sfn
 end
 class Satisfaction
+  # ==============
+  # = Exceptions =
+  # ==============
+  require 'satisfaction/exceptions'
+
   # ==================
   # = Core Utilities =
   # ==================
@@ -11,7 +16,6 @@ class Satisfaction
   require 'satisfaction/resource'
   require 'satisfaction/loader'
   require 'satisfaction/identity_map'
-  
   
   # =============
   # = Resources =

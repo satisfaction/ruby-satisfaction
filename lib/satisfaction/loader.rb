@@ -43,23 +43,21 @@ class Sfn::Loader
       [:ok, response.body]
     when Net::HTTPMovedPermanently
       limit = options[:redirect_limit] || 3
-      raise ArgumentError, "Too many redirects" unless limit > 0 #TODO: what is a better error here?
+      raise Sfn::TooManyRedirects, "Too many redirects" unless limit > 0
       get(response['location'], options.merge(:redirect_limit => limit - 1))
     when Net::HTTPBadRequest
-      raise RuntimeError, response.body
-    when Net::HTTPForbidden
-      [:forbidden, response.body]
-    when Net::HTTPUnauthorized
-      [:unauthorized, response.body]
+      raise Sfn::BadRequest, response.body
+    when Net::HTTPForbidden, Net::HTTPUnauthorized
+      raise Sfn::AuthorizationError, "Not authorized"
     when Net::HTTPNotFound
-      [:not_found, response.body]
+      raise Sfn::NotFound, "Not found"
     when Net::HTTPServiceUnavailable
-      raise RuntimeError, "The site is down for maintenance. Please try again later."
+      raise Sfn::SiteMaintenance, maintenance_message(response.body)
     else
-      raise "Explode: #{response.to_yaml}"
+      raise Sfn::Error, response.to_yaml
     end
   end
-  
+
   def post(url, options)
     uri = get_uri(url)
     form = options[:form] || {}
@@ -79,24 +77,22 @@ class Sfn::Loader
     response = execute(http, request)
     
     case response
+    when Net::HTTPForbidden, Net::HTTPUnauthorized
+      raise Sfn::AuthorizationError, "Not authorized"
     when Net::HTTPNotFound
-      [:not_found, response.body]
-    when Net::HTTPUnauthorized
-      [:unauthorized, response.body]
+      raise Sfn::NotFound, "Not found"
     when Net::HTTPBadRequest
-      raise RuntimeError, response.body
-    when Net::HTTPForbidden
-      [:forbidden, response.body]
+      raise Sfn::BadRequest, response.body
     when Net::HTTPSuccess
       [:ok, response.body]
     when Net::HTTPMethodNotAllowed
       #Post responds differently when the site is down for maintenance.
       #This will raise an error if site is down otherwise we will return method_not_allowed.
-      get(url, options)
+      get(url)
 
       [:method_not_allowed, response.body]
     else
-      raise "Explode: #{response.to_yaml}"
+      raise Sfn::Error, response.to_yaml
     end
   end
   
@@ -121,6 +117,11 @@ class Sfn::Loader
       request.oauth!(http, options[:consumer], options[:token])
     end
   end
+
+  def maintenance_message(html = '')
+    Nokogiri::HTML(html).at('.error_message_summary').text
+  rescue
+    "The site is down for maintenance. Please try again later."
+  end
+  
 end
-
-

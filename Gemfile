@@ -1,7 +1,7 @@
 source "http://gems.github.com"
 source :rubyforge
 
-gem 'hpricot', '0.8.3'
+gem 'nokogiri', '1.4.2'
 gem 'json', '1.4.6'
 gem 'activesupport', '2.3.5'
 gem 'memcache-client', '1.5.0'
