@@ -52,7 +52,7 @@ describe Sfn::Loader do
       end
 
       it "should return a status of :bad_request and the response body" do
-        @get.should raise_error(Sfn::BadRequest, @response_body)
+        @get.should raise_error(Sfn::BadRequest, "Bad request. Response body:\n" + @response_body)
       end
     end
 
@@ -118,12 +118,12 @@ describe Sfn::Loader do
         @response_body = "it'd be a little weird if our app responded with this error"
       end
 
-      it "should raise an Sfn::Error and include the response in yaml format" do
+      it "should raise an Sfn::Error and include the response body" do
         begin
           @get.call
         rescue Sfn::Error => e
           e.class.should == Sfn::Error
-          YAML::load(e.message).body.should == @response_body
+          e.message.should == "Encountered error. Body of response:\n" + @response_body
         end
       end
     end
@@ -165,7 +165,7 @@ describe Sfn::Loader do
       end
 
       it "should return raise an Sfn::BadRequest error and the response body" do
-        @post.should raise_error(Sfn::BadRequest, @response_body)
+        @post.should raise_error(Sfn::BadRequest, "Bad request. Response body:\n" + @response_body)
       end
     end
 
@@ -235,13 +235,11 @@ describe Sfn::Loader do
       describe "and the site is not in maintenance mode" do
         before(:each) do
           FakeWeb.register_uri(:get, 'http://test', :body => "blah", :status => "200")
-          @post.call
         end
 
         it "should raise an error and include the reponse body" do
-          @response.should == [ :method_not_allowed, @response_body ]
+          @post.should raise_error(Sfn::MethodNotAllowed, "Method not allowed")
         end
-
       end
     end
 
@@ -251,12 +249,12 @@ describe Sfn::Loader do
         @response_body = "it'd be a little weird if our app responded with this error"
       end
 
-      it "should raise an Sfn::Error and include the response in yaml format" do
+      it "should raise an Sfn::Error and include the response body" do
         begin
           @post.call
         rescue Sfn::Error => e
           e.class.should == Sfn::Error
-          YAML::load(e.message).body.should == @response_body
+          e.message.should == "Encountered error. Body of response:\n" + @response_body
         end
       end
     end

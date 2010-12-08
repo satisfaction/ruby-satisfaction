@@ -46,7 +46,7 @@ class Sfn::Loader
       raise Sfn::TooManyRedirects, "Too many redirects" unless limit > 0
       get(response['location'], options.merge(:redirect_limit => limit - 1))
     when Net::HTTPBadRequest
-      raise Sfn::BadRequest, response.body
+      raise Sfn::BadRequest, "Bad request. Response body:\n" + response.body
     when Net::HTTPForbidden, Net::HTTPUnauthorized
       raise Sfn::AuthorizationError, "Not authorized"
     when Net::HTTPNotFound
@@ -54,7 +54,7 @@ class Sfn::Loader
     when Net::HTTPServiceUnavailable
       raise Sfn::SiteMaintenance, maintenance_message(response.body)
     else
-      raise Sfn::Error, response.to_yaml
+      raise Sfn::Error, "Encountered error. Body of response:\n" + response.body
     end
   end
 
@@ -82,7 +82,7 @@ class Sfn::Loader
     when Net::HTTPNotFound
       raise Sfn::NotFound, "Not found"
     when Net::HTTPBadRequest
-      raise Sfn::BadRequest, response.body
+      raise Sfn::BadRequest, "Bad request. Response body:\n" + response.body
     when Net::HTTPSuccess
       [:ok, response.body]
     when Net::HTTPMethodNotAllowed
@@ -90,9 +90,9 @@ class Sfn::Loader
       #This will raise an error if site is down otherwise we will return method_not_allowed.
       get(url)
 
-      [:method_not_allowed, response.body]
+      raise Sfn::MethodNotAllowed, "Method not allowed"
     else
-      raise Sfn::Error, response.to_yaml
+      raise Sfn::Error, "Encountered error. Body of response:\n" + response.body
     end
   end
   

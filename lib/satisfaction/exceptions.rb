@@ -1,9 +1,10 @@
 
 module Sfn
   class Error < StandardError; end
-  class TooManyRedirects < Error; end
-  class BadRequest < Error; end
-  class AuthorizationError < Error; end
-  class NotFound < Error; end
-  class SiteMaintenance < Error; end
+  class TooManyRedirects < Sfn::Error; end
+  class BadRequest < Sfn::Error; end
+  class AuthorizationError < Sfn::Error; end
+  class NotFound < Sfn::Error; end
+  class SiteMaintenance < Sfn::Error; end
+  class MethodNotAllowed < Sfn::Error; end
 end
