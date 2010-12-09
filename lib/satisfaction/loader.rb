@@ -41,7 +41,7 @@ class Sfn::Loader
     when Net::HTTPSuccess
       cache.put(uri, response)
       [:ok, response.body]
-    when Net::HTTPMovedPermanently
+    when Net::HTTPMovedPermanently, Net::HTTPMovedTemporarily
       limit = options[:redirect_limit] || 3
       raise Sfn::TooManyRedirects, "Too many redirects" unless limit > 0
       get(response['location'], options.merge(:redirect_limit => limit - 1))
@@ -91,6 +91,8 @@ class Sfn::Loader
       get(url)
 
       raise Sfn::MethodNotAllowed, "Method not allowed"
+    when Net::HTTPServiceUnavailable
+      raise Sfn::SiteMaintenance, maintenance_message(response.body)
     else
       raise Sfn::Error, "Encountered error. Body of response:\n" + response.body
     end
