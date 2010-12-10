@@ -5,12 +5,12 @@ Gem::Specification.new do |s|
   s.version = "0.6.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["Scott Fleckenstein", "Josh Nichols", "Pius Uzamere", "Josh King", "Jen-Mei Wu"]
+  s.authors = ["Scott Fleckenstein", "Josh Nichols", "Pius Uzamere", "Josh King", "Jen-Mei Wu", "Claude Nix"]
   s.date = %q{2010-12-07}
   s.description = %q{Ruby interface to Get Satisfaction}
   s.email = %q{nerds+rubygems@getsatisfaction.com}
   s.extra_rdoc_files = [
-    "README.txt"
+    "README.markdown"
   ]
   s.files = [
     ".gitignore",
