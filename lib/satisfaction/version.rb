@@ -2,8 +2,8 @@ module Satisfaction
   module VERSION
     MAJOR = 0
     MINOR = 6
-    PATCH  = 1
-    PRE   = ""
+    PATCH  = 3
+    PRE   = nil
 
     STRING = [MAJOR, MINOR, PATCH, PRE].compact.join('.')
   end

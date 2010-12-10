@@ -9,28 +9,22 @@ Please check our Web site for the latest documentation:
 
 For questions, please visit the [Get Satisfaction API community][3]
 
-Known Issues
-============
-
-If you use your Satisfaction object to get a person, then that object is scoped to that person.
-
-For example:
-
-  sfn = Satisfaction.new
-  person = sfn.peson.get('jargon')
-  topics = sfn.topics.page(3, :order => 'recently_created') # Jargon's topics
-
-In the above case, topics will be scoped to topics created by Jargon instead of scoped to the
-top level. A simple workaround for now is to create a new Satisfaction object like so:
-
-  sfn = Satisfaction.new
-  person = sfn.peson.get('jargon')
-
-  sfn = Satisfaction.new
-  topics = sfn.topics.page(3, :order => 'recently_created') # Everyone's topics
-
 Changelog
 =========
+
+0.6.2
+
+* Fixed known issue with scoping. Calling resource methods could potentially change scope for
+  other objects. For example:
+
+      sfn = Satisfaction.new
+      sfn2 = Satisfaction.new
+      person = sfn.peson.get('jargon')
+      topics = sfn.topics.page(3, :order => 'recently_created') # Jargon's topics
+      sfn2.topics # Also Jargon's topics
+
+  This now behaves as expected (where topics and sfn2.topics would be scoped to the set of all i
+  topics)
 
 0.6.0
 

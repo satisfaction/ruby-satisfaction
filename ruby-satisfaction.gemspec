@@ -3,13 +3,13 @@ require File.expand_path("../lib/satisfaction/version", __FILE__)
 
 Gem::Specification.new do |s|
   s.name        = "ruby-satisfaction"
-  s.version     = '0.6.1'
+  s.version     = Satisfaction::VERSION::STRING
   s.platform    = Gem::Platform::RUBY
   s.author     = 'Get Satisfaction'
   s.email       = ["nerds+rubygems@getsatisfaction.com"]
   s.homepage    = "https://github.com/satisfaction/ruby-satisfaction"
   s.summary     = "Get Satisfaction ruby client"
-  s.description = "Get Satisfaction is a simple way to build online communities that enable productive conversations between companies and their customers. More than 46,000 companies use Get Satisfaction to provide a more social support experience, build better products, increase SEO and improve customer loyalty. Get Satisfaction communities are available at http://getsatisfaction.com."
+  s.description = "Ruby client for using Get Satisfaction's RESTful API. Get Satisfaction is a simple way to build online communities that enable productive conversations between companies and their customers. More than 46,000 companies use Get Satisfaction to provide a more social support experience, build better products, increase SEO and improve customer loyalty. Get Satisfaction communities are available at http://getsatisfaction.com."
 
   s.required_rubygems_version = ">= 1.3.6"
   s.rubyforge_project         = "ruby-satisfaction"
@@ -21,10 +21,12 @@ Gem::Specification.new do |s|
   s.add_dependency 'oauth', '>= 0.3.5'
 
   s.add_development_dependency "bundler", ">= 1.0.0"
+  s.add_development_dependency "gemcutter", ">= 0.6.1"
   s.add_development_dependency "rspec", "~> 2.2"
   s.add_development_dependency "fakeweb", "~> 1.3"
   s.add_development_dependency "open_gem", ">= 1.4"
   s.add_development_dependency "ruby-debug", ">= 0.10.4"
+  s.add_development_dependency "rr", '1.0.2'
 
   s.extra_rdoc_files = [ "README.markdown" ]
   s.files        = `git ls-files`.split("\n") - ['.rvmrc', '.gitignore']

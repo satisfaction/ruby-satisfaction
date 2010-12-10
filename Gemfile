@@ -1,5 +1,6 @@
 source :gemcutter
 
-# Specify your gem's dependencies in ruby-satisfaction.gemspec
+# Dependencies are specified in ruby-satisfaction.gemspec; the following statement
+# pulls info from the gemspec.
 gemspec
 
