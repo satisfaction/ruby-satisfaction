@@ -48,7 +48,14 @@ class Sfn::Loader
     when Net::HTTPBadRequest
       raise Sfn::BadRequest, "Bad request. Response body:\n" + response.body
     when Net::HTTPForbidden, Net::HTTPUnauthorized
-      raise Sfn::AuthorizationError, "Not authorized"
+      message = "Not authorized"
+      if restricted_provider = response['X-Sfn-Restricted-Identity-Provider']
+        message += " - Restricted to login provider"
+        if restricted_provider != 'yes'
+          message += " #{restricted_provider.capitalize}"
+        end
+      end
+      raise Sfn::AuthorizationError, message
     when Net::HTTPNotFound
       raise Sfn::NotFound, "Not found"
     when Net::HTTPServiceUnavailable
@@ -75,10 +82,17 @@ class Sfn::Loader
     http = Net::HTTP.new(uri.host, uri.port)
     add_authentication(request, http, options)
     response = execute(http, request)
-    
+
     case response
     when Net::HTTPForbidden, Net::HTTPUnauthorized
-      raise Sfn::AuthorizationError, "Not authorized"
+      message = "Not authorized"
+      if restricted_provider = response['X-Sfn-Restricted-Identity-Provider']
+        message += " - Restricted to login provider"
+        if restricted_provider != 'yes'
+          message += " #{restricted_provider.capitalize}"
+        end
+      end
+      raise Sfn::AuthorizationError, message
     when Net::HTTPNotFound
       raise Sfn::NotFound, "Not found"
     when Net::HTTPBadRequest

@@ -11,8 +11,12 @@ For questions, please visit the [Get Satisfaction API community][3]
 
 Changelog
 =========
+0.6.4
 
-0.6.2
+* Fixed a security issue with the resource associations and attributes.
+* Provide a more descriptive error message when the client tries to access a community that has restricted its identity provider.
+
+0.6.3
 
 * Fixed known issue with scoping. Calling resource methods could potentially change scope for
   other objects. For example:

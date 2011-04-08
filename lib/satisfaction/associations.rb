@@ -1,20 +1,25 @@
 module Associations
+  
   def has_many(resource, options={})
     class_name = options[:class_name] || "Sfn::#{resource.to_s.classify}"
-    eval <<-EOS
-      def self.#{resource}
-        @#{resource} ||= Sfn::ResourceCollection.new(#{class_name}, self.satisfaction, '#{options[:url]}')
+
+    class_eval do
+      define_method resource do
+        instance_variable_get("@#{resource}") || 
+          instance_variable_set("@#{resource}", Sfn::ResourceCollection.new(class_name.constantize, self.satisfaction, options[:url]))
       end
-    EOS
+    end   
   end
   
   def belongs_to(resource, options={})
     class_name = options[:class_name] || "Sfn::#{resource.to_s.classify}"
     parent_id = options[:parent_attribute] || "#{resource}_id"
-    eval <<-EOS
-      def self.#{resource}
-        @#{resource} ||= #{class_name}.new(#{parent_id}, self.satisfaction)
+    
+    class_eval do
+      define_method resource do
+        instance_variable_get("@#{resource}") ||
+          instance_variable_set("@#{resource}", class_name.constantize.new(parent_id, self.satisfaction))
       end
-    EOS
+    end  
   end
 end

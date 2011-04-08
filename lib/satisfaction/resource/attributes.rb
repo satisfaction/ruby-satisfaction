@@ -21,12 +21,14 @@ module Sfn::Resource::Attributes
       options.reverse_merge!(:type => 'nil')
       raise "Name can't be empty" if name.blank?
       
-      class_eval <<-EOS
-        def #{name}
+      class_eval do
+        define_method name do
           self.load unless self.loaded?
-          @#{name} ||= decode_raw_attribute(@attributes['#{name}'], #{options[:type]}) if @attributes
+
+          instance_variable_get("@#{name}") ||
+            (@attributes && instance_variable_set("@#{name}", decode_raw_attribute(@attributes[name], options[:type])))
         end
-      EOS
+      end
     end
   
   end
