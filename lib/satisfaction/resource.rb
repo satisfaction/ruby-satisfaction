@@ -181,6 +181,7 @@ class Sfn::Page < Sfn::HasSatisfaction
   end
   
   def page_count
+    return 1 if length == 0
     result = @total / length
     result += 1 if @total % length != 0
     result
