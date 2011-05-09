@@ -11,6 +11,10 @@ For questions, please visit the [Get Satisfaction API community][3]
 
 Changelog
 =========
+0.6.5
+
+* Fixed a divide-by-zero bug.
+
 0.6.4
 
 * Fixed a security issue with the resource associations and attributes.
