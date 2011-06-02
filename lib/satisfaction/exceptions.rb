@@ -7,4 +7,6 @@ module Sfn
   class NotFound < Sfn::Error; end
   class SiteMaintenance < Sfn::Error; end
   class MethodNotAllowed < Sfn::Error; end
+  class BadGateway < Sfn::Error; end
+  class GatewayTimeOut < Sfn::Error; end
 end

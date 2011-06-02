@@ -154,6 +154,27 @@ describe Sfn::Loader do
         end
       end
     end
+
+  # ---- GATEWAY -----------------------------------------------------------------------------------------------
+    describe "when the status is 502 (Bad Gateway, returned when a Unicorn worker is killed)" do
+      before(:each) do
+        @status_code = '502'
+      end
+
+      it "should raise an Sfn::BadGateway error" do
+        @get.should raise_error(Sfn::BadGateway, "Bad Gateway")
+      end
+    end
+
+    describe "when the status is 504 (GatewayTimeOut)" do
+      before(:each) do
+        @status_code = '504'
+      end
+
+      it "should raise an Sfn::GatewayTimeOut error" do
+        @get.should raise_error(Sfn::GatewayTimeOut, "Gateway TimeOut")
+      end
+    end
   end
 
   # ==== POST ==================================================================================================
@@ -299,6 +320,27 @@ describe Sfn::Loader do
           e.class.should == Sfn::Error
           e.message.should == "Encountered error. Body of response:\n" + @response_body
         end
+      end
+    end
+
+  # ---- GATEWAY -----------------------------------------------------------------------------------------------
+    describe "when the status is 502 (Bad Gateway, returned when a Unicorn worker is killed)" do
+      before(:each) do
+        @status_code = '502'
+      end
+
+      it "should raise an Sfn::BadGateway error" do
+        @post.should raise_error(Sfn::BadGateway, "Bad Gateway")
+      end
+    end
+
+    describe "when the status is 504 (GatewayTimeOut)" do
+      before(:each) do
+        @status_code = '504'
+      end
+
+      it "should raise an Sfn::GatewayTimeOut error" do
+        @post.should raise_error(Sfn::GatewayTimeOut, "Gateway TimeOut")
       end
     end
 

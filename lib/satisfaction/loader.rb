@@ -60,6 +60,10 @@ class Sfn::Loader
       raise Sfn::NotFound, "Not found"
     when Net::HTTPServiceUnavailable
       raise Sfn::SiteMaintenance, maintenance_message(response.body)
+    when Net::HTTPBadGateway
+      raise Sfn::BadGateway, "Bad Gateway"
+    when Net::HTTPGatewayTimeOut
+      raise Sfn::GatewayTimeOut, "Gateway TimeOut"
     else
       raise Sfn::Error, "Encountered error. Body of response:\n" + response.body
     end
@@ -107,6 +111,10 @@ class Sfn::Loader
       raise Sfn::MethodNotAllowed, "Method not allowed"
     when Net::HTTPServiceUnavailable
       raise Sfn::SiteMaintenance, maintenance_message(response.body)
+    when Net::HTTPBadGateway
+      raise Sfn::BadGateway, "Bad Gateway"
+    when Net::HTTPGatewayTimeOut
+      raise Sfn::GatewayTimeOut, "Gateway TimeOut"
     else
       raise Sfn::Error, "Encountered error. Body of response:\n" + response.body
     end
