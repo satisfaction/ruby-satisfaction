@@ -11,6 +11,10 @@ For questions, please visit the [Get Satisfaction API community][3]
 
 Changelog
 =========
+0.6.6
+
+* Handle HTTP 502/504 for unicorn.
+
 0.6.5
 
 * Fixed a divide-by-zero bug.
