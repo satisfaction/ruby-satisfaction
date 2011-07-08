@@ -36,17 +36,19 @@ class Sfn::Loader
     http = Net::HTTP.new(uri.host, uri.port)
     add_authentication(request, http, options)
     response = execute(http, request)
-    
+
     case response
     when Net::HTTPSuccess
       cache.put(uri, response)
       [:ok, response.body]
+    when Net::HTTPNotModified
+      [:ok, cache_record.body]
     when Net::HTTPMovedPermanently, Net::HTTPMovedTemporarily
       limit = options[:redirect_limit] || 3
       raise Sfn::TooManyRedirects, "Too many redirects" unless limit > 0
       get(response['location'], options.merge(:redirect_limit => limit - 1))
     when Net::HTTPBadRequest
-      raise Sfn::BadRequest, "Bad request. Response body:\n" + response.body
+      raise Sfn::BadRequest, "Bad request. Response body:\n#{response.body}"
     when Net::HTTPForbidden, Net::HTTPUnauthorized
       message = "Not authorized"
       if restricted_provider = response['X-Sfn-Restricted-Identity-Provider']
@@ -65,7 +67,7 @@ class Sfn::Loader
     when Net::HTTPGatewayTimeOut
       raise Sfn::GatewayTimeOut, "Gateway TimeOut"
     else
-      raise Sfn::Error, "Encountered error. Body of response:\n" + response.body
+      raise Sfn::Error, "Encountered error. Body of response:\n#{response.body}"
     end
   end
 
@@ -100,7 +102,7 @@ class Sfn::Loader
     when Net::HTTPNotFound
       raise Sfn::NotFound, "Not found"
     when Net::HTTPBadRequest
-      raise Sfn::BadRequest, "Bad request. Response body:\n" + response.body
+      raise Sfn::BadRequest, "Bad request. Response body:\n#{response.body}"
     when Net::HTTPSuccess
       [:ok, response.body]
     when Net::HTTPMethodNotAllowed
@@ -116,7 +118,7 @@ class Sfn::Loader
     when Net::HTTPGatewayTimeOut
       raise Sfn::GatewayTimeOut, "Gateway TimeOut"
     else
-      raise Sfn::Error, "Encountered error. Body of response:\n" + response.body
+      raise Sfn::Error, "Encountered error. Body of response:\n#{response.body}"
     end
   end
   

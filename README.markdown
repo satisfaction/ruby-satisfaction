@@ -11,6 +11,10 @@ For questions, please visit the [Get Satisfaction API community][3]
 
 Changelog
 =========
+0.6.7
+
+* Fixed Sfn::Loader#get so it uses cached content when a 304 Not Modified is received.
+
 0.6.6
 
 * Handle HTTP 502/504 for unicorn.

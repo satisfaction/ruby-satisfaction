@@ -8,6 +8,7 @@ describe Sfn::Loader do
     before(:each) do
       @response = nil
       @status_code = '200'
+      @loader = Sfn::Loader.new
       @get = lambda do
         FakeWeb.register_uri(
           :get,
@@ -15,9 +16,8 @@ describe Sfn::Loader do
           :body => @response_body,
           :status => [@status_code]
         )
-        loader = Sfn::Loader.new
-        stub(loader).add_authentication {}
-        @response = loader.get('http://test')
+        stub(@loader).add_authentication {}
+        @response = @loader.get('http://test')
       end
     end
 
@@ -30,6 +30,21 @@ describe Sfn::Loader do
 
       it "should return a status of :ok and the response body" do
         @response.should == [:ok, @response_body]
+      end
+    end
+
+    describe "when the status is not modified (304)" do
+      before(:each) do
+        @status_code = '304'
+        @cached_body = {:id => "123", :domain => "foo.bar"}.to_json
+        @response_body = nil
+        stub(@loader.cache).get(anything) { Sfn::Loader::CacheRecord.new('http://test', 'etag-foo', @cached_body) }
+
+        @get.call
+      end
+
+      it "should return a status of :ok and the cached response body" do
+        @response.should == [:ok, @cached_body]
       end
     end
 
