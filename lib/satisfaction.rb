@@ -102,7 +102,13 @@ class Satisfaction
   end
   
   def authorize_url(token)
-    "#{options[:authorize_url]}?oauth_token=#{token.token}"
+    uri = URI.parse(options[:authorize_url])
+    if uri.query.present?
+      uri.query += "&oauth_token=#{token.token}"
+    else
+      uri.query = "oauth_token=#{token.token}"
+    end
+    uri.to_s
   end
   
   def access_token(token)
