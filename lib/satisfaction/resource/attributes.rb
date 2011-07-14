@@ -61,7 +61,7 @@ class Sfn::Resource
     case value
     when Hash
       id = value['id']
-      returning(new(id, satisfaction)){|r| r.attributes = value}
+      new(id, satisfaction).tap {|r| r.attributes = value}
     else
       new(value, satisfaction)
     end
