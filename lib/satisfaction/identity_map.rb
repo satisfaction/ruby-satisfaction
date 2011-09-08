@@ -6,16 +6,16 @@ class Sfn::IdentityMap
     @pages = {}
   end
   
-  def get_record(klass, id, &block)
-    result = @records[[klass, id]]
+  def get_record(klass, id, path='', &block)
+    result = @records[[klass, id, path]]
     result ||= begin
-      obj = yield(klass, id)
-      @records[[klass, id]] = obj
+      obj = yield(klass, id, path)
+      @records[[klass, id, path]] = obj
     end
     result
   end
   
-  def expire_record(klass, id)
-    @records[[klass, id]] = nil
+  def expire_record(klass, id, path='')
+    @records[[klass, id, path]] = nil
   end
 end

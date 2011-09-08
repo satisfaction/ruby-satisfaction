@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ruby-satisfaction (0.6.5)
+    ruby-satisfaction (0.7.0)
       activesupport (~> 2.3)
       json (>= 1.4.6)
       memcache-client (>= 1.5.0)

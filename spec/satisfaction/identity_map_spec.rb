@@ -38,7 +38,7 @@ describe "Identity Map" do
   end
   
   it "should work with pages too" do
-    c1 = @sfn.companies.get(4)
+    c1 = @sfn.companies.page(1, :q => 'satisfaction').first
     c2 = @sfn.companies.page(1, :q => 'satisfaction').first
     
     c1.object_id.should == c2.object_id

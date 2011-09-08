@@ -4,18 +4,19 @@ class Sfn::Resource < Sfn::HasSatisfaction
   require 'satisfaction/resource/attributes'
   include ::Associations
   include Attributes
-  attr_reader :id
+  attr_reader :id, :prefix
   include Sfn::Util
   
   
-  def initialize(id, satisfaction)
+  def initialize(id, satisfaction, prefix='')
     super satisfaction
     @id = id
+    @prefix = prefix
     setup_associations if respond_to?(:setup_associations)
   end
   
   def path
-    raise "path not implemented in Resource base class"
+    "#{prefix}/#{@id}"
   end
   
   def load
@@ -82,8 +83,8 @@ class Sfn::ResourceCollection < Sfn::HasSatisfaction
   
   def get(id, options={})
     #options currently ignored
-    satisfaction.identity_map.get_record(klass, id) do
-      klass.new(id, satisfaction)
+    satisfaction.identity_map.get_record(klass, id, path) do
+      klass.new(id, satisfaction, path)
     end
   end
   

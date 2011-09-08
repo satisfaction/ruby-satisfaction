@@ -4,10 +4,6 @@ class Sfn::Topic < Sfn::Resource
   attribute :created_at, :type => Time
   attribute :author, :type => Sfn::Person
   
-  def path
-    "/topics/#{@id}"
-  end
-  
   def setup_associations
     has_many :replies, :url => "#{path}/replies"
     has_many :people, :url => "#{path}/people"

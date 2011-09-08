@@ -11,6 +11,28 @@ For questions, please visit the [Get Satisfaction API community][3]
 
 Changelog
 =========
+0.7.0
+
+* Revised Sfn::Resource so that it supports calls to API endpoints for nested resources
+  (e.g. /companies/cid/products/pid/topics).
+
+IMPORTANT NOTE: This version changes the gem behavior in a way that may introduce backwards incompatibility. In
+particular, with prior versions, the following code:
+
+      Satisfaction.new.companies['company_domain'].products['p_slug'].topics['t_slug'].tags
+
+ignores the chained context of the final method call and simply sends a GET request to the following API endpoint:
+
+      /topics/t_slug/tags
+
+With this version, however, the gem will make API calls for nested resources in the API that correspond to the chained
+method calls. In particular, the above code will instead attempt to send a GET request to the following endpoint:
+
+      /companies/company_domain/products/p_slug/topics/t_slug/tags
+
+In this particular case, the endpoint does not exist in the Get Satisfaction REST API, so API calls made to it will
+yield a 404 Not Found response error.
+
 0.6.7
 
 * Fixed Sfn::Loader#get so it uses cached content when a 304 Not Modified is received.
