@@ -34,6 +34,7 @@ class Sfn::Loader
     end
     
     http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true if uri.scheme.try(:downcase) == 'https'
     add_authentication(request, http, options)
     response = execute(http, request)
 
@@ -86,6 +87,7 @@ class Sfn::Loader
     request.set_form_data(form)
     
     http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true if uri.scheme.try(:downcase) == 'https'
     add_authentication(request, http, options)
     response = execute(http, request)
 
