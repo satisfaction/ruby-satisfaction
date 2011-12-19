@@ -3,7 +3,7 @@ require File.expand_path("../lib/satisfaction/version", __FILE__)
 
 Gem::Specification.new do |s|
   s.name        = "ruby-satisfaction"
-  s.version     = Satisfaction::VERSION::STRING
+  s.version     = GemSatisfaction::VERSION::STRING
   s.platform    = Gem::Platform::RUBY
   s.author     = 'Get Satisfaction'
   s.email       = ["nerds+rubygems@getsatisfaction.com"]
@@ -26,7 +26,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "fakeweb", "~> 1.3"
   s.add_development_dependency "open_gem", ">= 1.4"
   s.add_development_dependency "ruby-debug", ">= 0.10.4"
-  s.add_development_dependency "rr", '1.0.2'
+  s.add_development_dependency "rr", '1.0.4'
 
   s.extra_rdoc_files = [ "README.markdown" ]
   s.files        = `git ls-files`.split("\n") - ['.rvmrc', '.gitignore']

@@ -3,8 +3,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe Sfn::Loader do
 
   # ==== GET ==========================================================================================================
-
-  describe "#get" do
+  shared_examples_for "#get" do
     before(:each) do
       @response = nil
       @status_code = '200'
@@ -12,12 +11,12 @@ describe Sfn::Loader do
       @get = lambda do
         FakeWeb.register_uri(
           :get,
-          'http://test',
+          "http://#{@api_host}:#{@api_port}",
           :body => @response_body,
           :status => [@status_code]
         )
         stub(@loader).add_authentication {}
-        @response = @loader.get('http://test')
+        @response = @loader.get(@api_url)
       end
     end
 
@@ -46,44 +45,6 @@ describe Sfn::Loader do
       it "should return a status of :ok and the cached response body" do
         @response.should == [:ok, @cached_body]
       end
-    end
-
-    describe "when we are in a redirect loop" do
-      attr_reader :loader
-
-      before(:each) do
-        @url = 'http://loop/'
-        @loader = Sfn::Loader.new
-        stub(loader).add_authentication {}
-      end
-
-      describe "and the status is 301" do
-        before(:each) do
-          @get = lambda { 
-            FakeWeb.register_uri(:get, @url, :status => 301, :location => @url)
-            @response = loader.get(@url)
-          }
-        end
-
-        it "should raise a TooManyRedirects exception with an appropriate message" do
-          @get.should raise_error(Sfn::TooManyRedirects, "Too many redirects")
-        end
-      end
-
-      describe "and the status is 302" do
-        before(:each) do
-          @get = lambda { 
-            FakeWeb.register_uri(:get, @url, :status => 302, :location => @url)
-            @response = loader.get(@url)
-          }
-        end
-
-        it "should raise a TooManyRedirects exception with an appropriate message" do
-          @get.should raise_error(Sfn::TooManyRedirects, "Too many redirects")
-        end
-      end
-
-
     end
 
     describe "when the status is 400 (Bad Request)" do
@@ -193,20 +154,20 @@ describe Sfn::Loader do
   end
 
   # ==== POST ==================================================================================================
-  describe "#post" do
+  shared_examples_for "#post" do
     before(:each) do
       @response = nil
       @status_code = '200'
       @post = lambda do
         FakeWeb.register_uri(
           :post,
-          'http://test',
+          "http://#{@api_host}:#{@api_port}",
           :body => @response_body,
           :status => [@status_code]
         )
         loader = Sfn::Loader.new
         stub(loader).add_authentication {}
-        @response = loader.post('http://test', "a=b")
+        @response = loader.post(@api_url, "a=b")
       end
     end
 
@@ -265,13 +226,113 @@ describe Sfn::Loader do
       end
     end
 
+  # ---- GATEWAY -----------------------------------------------------------------------------------------------
+    describe "when the status is 502 (Bad Gateway, returned when a Unicorn worker is killed)" do
+      before(:each) do
+        @status_code = '502'
+      end
+
+      it "should raise an Sfn::BadGateway error" do
+        @post.should raise_error(Sfn::BadGateway, "Bad Gateway")
+      end
+    end
+
+    describe "when the status is 504 (GatewayTimeOut)" do
+      before(:each) do
+        @status_code = '504'
+      end
+
+      it "should raise an Sfn::GatewayTimeOut error" do
+        @post.should raise_error(Sfn::GatewayTimeOut, "Gateway TimeOut")
+      end
+    end
+  end
+
+  context 'over ssl' do
+    before do
+      @api_host = 'test'
+      @api_url  = "https://#{@api_host}"
+      @api_port = "443" 
+      any_instance_of(Net::HTTP) do |n|
+        mock(n).use_ssl=(true)
+      end
+    end
+
+    it_should_behave_like '#get'
+    it_should_behave_like '#post'
+  end
+
+  context 'not over ssl' do
+    before do
+      @api_host = 'test'
+      @api_url  = "http://#{@api_host}"
+      @api_port = ""
+    end
+
+    it_should_behave_like '#get'
+    it_should_behave_like '#post'
+
+    
+    describe "when we are in a redirect loop" do
+      attr_reader :loader
+
+      before(:each) do
+        @url = @api_url
+        @loader = Sfn::Loader.new
+        stub(loader).add_authentication {}
+      end
+
+      describe "and the status is 301" do
+        before(:each) do
+          @get = lambda { 
+            FakeWeb.register_uri(:get, "http://#{@api_host}:#{@api_port}", :status => 301, :location => @url)
+            @response = loader.get(@url)
+          }
+        end
+
+        it "should raise a TooManyRedirects exception with an appropriate message" do
+          @get.should raise_error(Sfn::TooManyRedirects, "Too many redirects")
+        end
+      end
+
+      describe "and the status is 302" do
+        before(:each) do
+          @get = lambda { 
+            FakeWeb.register_uri(:get, "http://#{@api_host}:#{@api_port}", :status => 302, :location => @url)
+            @response = loader.get(@url)
+          }
+        end
+
+        it "should raise a TooManyRedirects exception with an appropriate message" do
+          @get.should raise_error(Sfn::TooManyRedirects, "Too many redirects")
+        end
+      end
+    end
+  end
+
   # ---- MAINTENANCE --------------------------------------------------------------------------------------------------
+  describe 'MAINTENANCE' do
+    before(:each) do
+      @api_url = "http://test"
+      @response = nil
+      @status_code = '200'
+      @post = lambda do
+        FakeWeb.register_uri(
+          :post,
+          @api_url,
+          :body => @response_body,
+          :status => [@status_code]
+        )
+        loader = Sfn::Loader.new
+        stub(loader).add_authentication {}
+        @response = loader.post(@api_url, "a=b")
+      end
+    end
 
     shared_examples_for "the site is in maintenance mode" do
-
       describe "and there is not an element with a class of error_message_summary in the HTML" do
         before(:each) do
-          FakeWeb.register_uri(:get, 'http://test', :body => "blah", :status => "503")
+          FakeWeb.register_uri(:get, @api_url, :body => "blah", :status => "503")
         end
 
         it "should raise an error and include the default maintenance message" do
@@ -282,15 +343,14 @@ describe Sfn::Loader do
       describe "and there is an element with a class of error_message_summary in the HTML" do
         before(:each) do
           @custom_error = "Something crazy is going down!"
-          @response_body = "<html><head></head><body><h2 class='error_message_summary'>#{@custom_error}</h2></body>"
-          FakeWeb.register_uri(:get, 'http://test', :body => @response_body, :status => "503")
-        end
+            @response_body = "<html><head></head><body><h2 class='error_message_summary'>#{@custom_error}</h2></body>"
+            FakeWeb.register_uri(:get, @api_url, :body => @response_body, :status => "503")
+          end
 
         it "should raise an error and include the contents of the element" do
           @post.should raise_error(Sfn::SiteMaintenance, @custom_error)
         end
       end
-
     end
 
     describe "when the status is 405 (Method Not Allowed)" do
@@ -303,7 +363,7 @@ describe Sfn::Loader do
 
       describe "when the site is not in maintenance mode" do
         before(:each) do
-          FakeWeb.register_uri(:get, 'http://test', :body => "blah", :status => "200")
+          FakeWeb.register_uri(:get, @api_url, :body => "blah", :status => "200")
         end
 
         it "should raise an error and include the reponse body" do
@@ -337,28 +397,5 @@ describe Sfn::Loader do
         end
       end
     end
-
-  # ---- GATEWAY -----------------------------------------------------------------------------------------------
-    describe "when the status is 502 (Bad Gateway, returned when a Unicorn worker is killed)" do
-      before(:each) do
-        @status_code = '502'
-      end
-
-      it "should raise an Sfn::BadGateway error" do
-        @post.should raise_error(Sfn::BadGateway, "Bad Gateway")
-      end
-    end
-
-    describe "when the status is 504 (GatewayTimeOut)" do
-      before(:each) do
-        @status_code = '504'
-      end
-
-      it "should raise an Sfn::GatewayTimeOut error" do
-        @post.should raise_error(Sfn::GatewayTimeOut, "Gateway TimeOut")
-      end
-    end
-
   end
-
 end

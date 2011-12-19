@@ -11,6 +11,13 @@ For questions, please visit the [Get Satisfaction API community][3]
 
 Changelog
 =========
+0.7.1
+
+* Integration smoke tests to validate proper ssl
+request.
+* Test loader code on the SSL context also
+* Suppress the 'warning: peer certificate won't be verified in this SSL session'
+
 0.7.0
 
 * Revised Sfn::Resource so that it supports calls to API endpoints for nested resources
