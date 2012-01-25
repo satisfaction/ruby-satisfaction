@@ -11,6 +11,15 @@ For questions, please visit the [Get Satisfaction API community][3]
 
 Changelog
 =========
+0.7.4
+
+* Added the #slug attribute to the Sfn::Topic resource.
+
+0.7.3
+
+* Removed Net::Http patch to avoid SSL warning. (Note: This patch might cause other libraries that patch Net::Http to
+  get into a funky state.)
+
 0.7.1
 
 * Integration smoke tests to validate proper ssl
