@@ -1,5 +1,5 @@
 class Sfn::Topic < Sfn::Resource
-  attributes :subject, :style, :content, :reply_count, :follower_count, :company_id, :at_sfn
+  attributes :subject, :style, :content, :reply_count, :follower_count, :company_id, :at_sfn, :slug
   attribute :last_active_at, :type => Time
   attribute :created_at, :type => Time
   attribute :author, :type => Sfn::Person
