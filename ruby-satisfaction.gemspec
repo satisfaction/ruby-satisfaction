@@ -15,17 +15,16 @@ Gem::Specification.new do |s|
   s.rubyforge_project         = "ruby-satisfaction"
 
   s.add_dependency 'nokogiri', '>= 1.4.2'
-  s.add_dependency 'json', '>= 1.4.6'
-  s.add_dependency 'activesupport', '~> 2.3'
+  s.add_dependency 'json', '>= 1.7.3'
+  s.add_dependency 'activesupport'
   s.add_dependency 'memcache-client', '>= 1.5.0'
   s.add_dependency 'oauth', '>= 0.3.5'
 
-  s.add_development_dependency "bundler", ">= 1.0.0"
+  s.add_development_dependency "bundler", ">= 1.1.4"
   s.add_development_dependency "gemcutter", ">= 0.6.1"
-  s.add_development_dependency "rspec", "~> 2.2"
+  s.add_development_dependency "rspec", "~> 2.11"
   s.add_development_dependency "fakeweb", "~> 1.3"
   s.add_development_dependency "open_gem", ">= 1.4"
-  s.add_development_dependency "ruby-debug", ">= 0.10.4"
   s.add_development_dependency "rr", '1.0.4'
 
   s.extra_rdoc_files = [ "README.markdown" ]

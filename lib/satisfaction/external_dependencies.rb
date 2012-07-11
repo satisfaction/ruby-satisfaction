@@ -1,8 +1,15 @@
 require 'rubygems'
-require 'active_support'
+
+require 'active_support/version'
+
+if ActiveSupport::VERSION::MAJOR == 3
+  require 'active_support/all'
+else
+  require 'active_support'
+end
+
 require 'nokogiri'
 require 'json'
-require 'json/add/rails'  #make json play nice with the json rails outputs
 gem('memcache-client')
 require 'memcache'
 

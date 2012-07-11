@@ -1,12 +1,7 @@
 require 'rubygems'
 require 'rspec'
 require 'fakeweb'
-require 'ruby-debug'
 require 'rr'
-
-Debugger.settings[:autolist] = 1
-Debugger.settings[:autoeval] = true
-Debugger.start
 
 $:.unshift "#{File.dirname(__FILE__)}/../lib"
 

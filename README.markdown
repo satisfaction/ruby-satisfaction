@@ -11,6 +11,10 @@ For questions, please visit the [Get Satisfaction API community][3]
 
 Changelog
 =========
+0.7.5
+
+* Remove dependency on a specific version of active_support, now compatible with either rails 2.x or 3.x.
+
 0.7.4
 
 * Added the #slug attribute to the Sfn::Topic resource.
